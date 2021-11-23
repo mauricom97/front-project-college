@@ -1,5 +1,5 @@
 <template>
-  <div style="position: absolute; width: 35%">
+  <div style="position: absolute; width: 35%; top:5%;">
     <div id="isCompany" v-if="shape">
       <div class="row">
         <div class="col">
@@ -82,6 +82,15 @@
       </div>
     </div>
 
+    <q-chat-message
+      v-if="message != null"
+      name="Aviso"
+      avatar="https://cdn.quasar.dev/img/avatar4.jpg"
+      :text="[message]"
+      sent
+      stamp="Agora"
+    />
+
     <div style="margin: 2%; text-align: center">
       <div class="q-pa-md">
         <div class="q-gutter-sm">
@@ -105,18 +114,10 @@
 
     <div class="q-pa-md row justify-center">
       <div style="width: 100%; max-width: 400px">
-        <q-chat-message
-          name="me"
-          avatar="https://cdn.quasar.dev/img/avatar1.jpg"
-          :text="['hey, how are you?']"
-          sent
-        />
       </div>
     </div>
   </div>
 </template>
-
-<style></style>
 
 <script>
 import { ref } from "vue";
@@ -152,6 +153,7 @@ export default {
         },
       },
       pessoafisica: false,
+      message: null
     };
   },
 
@@ -168,6 +170,10 @@ export default {
         .post("http://localhost:3352/entities", this.entity)
         .then((response) => {
           console.log(response);
+          if(response.data.response.success){
+            this.message = "Entidade criada com sucesso"
+            this.clear_object(this.entity);
+          }
         })
         .catch((error) => {
           console.log(error);
