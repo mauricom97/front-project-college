@@ -1,5 +1,5 @@
 <template>
-  <div style="position: absolute; width: 35%; top:5%;">
+  <div class="absolute-center">
     <div id="isCompany" v-if="shape">
       <div class="row">
         <div class="col">

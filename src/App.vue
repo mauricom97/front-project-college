@@ -24,7 +24,7 @@
 
   <div id="cadastroEntidade" style="margin: 15%; top:5%;">
 
-    <createEntity v-if="comp_createEntity == true" style="position:absolute; left: 30%;"/>
+    <createEntity v-if="comp_createEntity == true" class="absolute-center"/>
     <searchEntity v-if="comp_searchEntity == true" style="position: absolute; top: 1%; right:15% "/>
   </div>
 
