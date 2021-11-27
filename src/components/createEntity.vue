@@ -102,7 +102,8 @@
         <div class="q-px-sm"></div>
       </div>
 
-      <q-btn label="Criar entidade" v-on:click="create" color="orange-6" />
+      <q-btn label="Criar entidade" v-if="!dataEditEntity" v-on:click="create" color="orange-6" />
+      <q-btn label="Atualizar entidade" v-on:click="update" v-if="dataEditEntity" color="orange-6" />
       <q-btn
         label="Limpar campos"
         v-on:click="limparDados()"
@@ -125,6 +126,11 @@ import axios from "axios";
 import { mask } from "vue-the-mask";
 
 export default {
+
+  props:{
+    dataEditEntity: Object
+  },
+
   directives: { mask },
   setup() {
     return {
@@ -148,8 +154,9 @@ export default {
         phone: null,
         email: null,
         type: {
-          client: true,
+          client: false,
           agency: false,
+          supplier: false
         },
       },
       pessoafisica: false,
@@ -160,8 +167,9 @@ export default {
   methods: {
     async create() {
       this.entity.type.client = this.client;
-      this.entity.type.client = this.agency;
-      this.entity.type.client = this.supplier;
+      this.entity.type.agency = this.agency;
+      this.entity.type.supplier = this.supplier;
+      this.entity.company = this.pessoafisica
       if (this.pessoafisica) {
         this.entity.corporate_name = this.fantasy_name;
       }
@@ -178,6 +186,50 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+
+    async update() {
+
+        var config = {
+        method: 'put',
+        url: `http://localhost:3352/entities/${this.dataEditEntity.uuid}`,
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : this.entity
+      };
+
+      await axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    },
+
+    async getDataEntity() {
+        if(this.dataEditEntity != null){
+
+        console.log(this.dataEditEntity)
+
+        var config = {
+          method: 'get',
+          url: `http://localhost:3352/entities/${this.dataEditEntity.uuid}`,
+          headers: { }
+        };
+
+        await axios(config)
+        .then( (response) => {
+          console.log(JSON.stringify(response.data));
+          this.entity = response.data.response.success
+          this.pessoafisica = response.data.response.success.company
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
     },
 
     limparDados() {
@@ -215,5 +267,13 @@ export default {
         });
     },
   },
+  mounted () {
+
+  },
+  beforeMount(){
+    if(this.dataEditEntity){
+      console.log(this.getDataEntity())
+    }
+ }
 };
 </script>

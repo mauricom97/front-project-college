@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="absolute-center">
       <q-input style="position:relative; top:5%;" v-model="search" filled type="search" hint="Buscar entidade">
         <template v-slot:append>
           <q-icon name="search" />
@@ -12,7 +12,7 @@
               <q-card-section>
                 Nome: {{entity.fantasy_name}}
                 <q-btn round class="q-mr-sm q-ml-sm" color="red" icon="delete" v-on:click="dialogEntity(entity.uuid, entity.fantasy_name, 'delete')" />
-                <q-btn round class="q-mr-sm q-ml-sm" color="primary" icon="edit" v-on:click="dialogEntity(entity.uuid, entity.fantasy_name, 'edit')" />
+                <q-btn round class="q-mr-sm q-ml-sm" color="primary" icon="edit" v-on:click="editEntity(entity.uuid, entity.fantasy_name, 'edit')" />
               </q-card-section>
             </q-card>
         </li>
@@ -40,6 +40,9 @@
 import axios from "axios";
 
 export default {
+  props:{
+    entidade: String
+  },
   data(){
     return{
       listEntity: null,
@@ -68,6 +71,7 @@ export default {
     },
 
     dialogEntity: async function (uuid, name, type) {
+      console.log(type)
       if(type === "delete"){
         this.confirmDelete = true
       }else if(type === "edit"){
@@ -107,11 +111,19 @@ export default {
         console.log(error);
       });
 
-    }
+    },
+
+  editEntity: async function(uuid, name, type){
+    this.$emit('editEntity', {uuid, name, type})
+  }
+
  },
  beforeMount(){
     this.getEntities()
  },
+ mounted () {
+  console.log(this.entidades)
+ }
 }
 </script>
 
