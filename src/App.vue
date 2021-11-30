@@ -1,6 +1,10 @@
 <template>
 <q-layout style="position:absolute; top: 5%;" >
 
+<login v-if="logado == false"></login>
+
+<div v-if="logado == true">
+
       <q-btn style="position:absolute; right:5%; top:1%;" color="primary" label="Entidades">
         <q-menu
           transition-show="flip-right"
@@ -28,6 +32,8 @@
     <searchEntity v-if="comp_searchEntity == true" :entidade="'teste'" style="position: absolute; top: 1%; right:15% " @editEntity="getData"/>
   </div>
 
+</div>
+
 </q-layout>
 </template>
 
@@ -35,19 +41,22 @@
 import { ref } from 'vue'
 import createEntity from './components/createEntity.vue'
 import searchEntity from './components/searchEntity.vue'
+import login from './components/login.vue'
 export default {
   name: 'LayoutDefault',
 
   components: {
     createEntity,
-    searchEntity
+    searchEntity,
+    login
   },
 
   data(){
     return{
       comp_createEntity: false,
       comp_searchEntity: false,
-      dataEditEntity: null
+      dataEditEntity: null,
+      logado: false
     }
   },
 
