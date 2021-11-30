@@ -12,6 +12,7 @@
             v-if="pessoafisica == false"
             label="CNPJ"
             style="margin: 2%"
+            v-on:keyup="getEntityEdit()"
           />
           <q-input
             filled
@@ -20,6 +21,7 @@
             v-if="pessoafisica != false"
             label="CPF"
             style="margin: 2%"
+            v-on:keyup="getEntityEdit()"
           />
 
           <q-input
@@ -102,8 +104,8 @@
         <div class="q-px-sm"></div>
       </div>
 
-      <q-btn label="Criar entidade" v-if="!dataEditEntity" v-on:click="create" color="orange-6" />
-      <q-btn label="Atualizar entidade" v-on:click="update" v-if="dataEditEntity" color="orange-6" />
+      <q-btn label="Criar entidade" v-if="!updateEntity" v-on:click="create" color="orange-6" />
+      <q-btn label="Atualizar entidade" v-on:click="update" v-if="updateEntity" color="orange-6" />
       <q-btn
         label="Limpar campos"
         v-on:click="limparDados()"
@@ -160,7 +162,9 @@ export default {
         },
       },
       pessoafisica: false,
-      message: null
+      message: null,
+      updateEntity: null,
+      dataEntityUuid: null
     };
   },
 
@@ -192,7 +196,7 @@ export default {
 
         var config = {
         method: 'put',
-        url: `http://localhost:3352/entities/${this.dataEditEntity.uuid}`,
+        url: `http://localhost:3352/entities/${this.dataEntityUuid}`,
         headers: { 
           'Content-Type': 'application/json'
         },
@@ -214,22 +218,54 @@ export default {
 
         console.log(this.dataEditEntity)
 
+        
+        if(this.dataEditEntity.uuid){
+          this.dataEntityUuid = this.dataEditEntity.uuid
+        }else{
+          this.dataEntityUuid = this.entity.uuid
+        }
+
         var config = {
           method: 'get',
-          url: `http://localhost:3352/entities/${this.dataEditEntity.uuid}`,
+          url: `http://localhost:3352/entities/${this.dataEntityUuid}`,
           headers: { }
         };
 
         await axios(config)
         .then( (response) => {
           console.log(JSON.stringify(response.data));
-          this.entity = response.data.response.success
-          this.pessoafisica = response.data.response.success.company
+            this.entity = response.data.response.success
+            this.pessoafisica = !this.entity.company
         })
         .catch(function (error) {
           console.log(error);
         });
       }
+    },
+
+    async getEntityEdit() {
+      if(this.entity.cpf_cnpj.length === 14 && this.pessoafisica == true || this.entity.cpf_cnpj.length === 18 && this.pessoafisica == false)
+      var config = {
+        method: 'get',
+        url: `http://localhost:3352/entities/cgcic/${this.entity.cpf_cnpj}`,
+        headers: { }
+      };
+
+      await axios(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        if(response.data.response.success != null || response.data.response.success){
+          this.entity = response.data.response.success
+          this.dataEntityUuid = response.data.response.success.uuid
+          console.log(this.entity)
+          this.pessoafisica = !response.data.response.company
+          this.updateEntity = true
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     },
 
     limparDados() {
@@ -272,6 +308,7 @@ export default {
   },
   beforeMount(){
     if(this.dataEditEntity){
+      this.updateEntity = true
       console.log(this.getDataEntity())
     }
  }
