@@ -126,13 +126,10 @@
 import { ref } from "vue";
 import axios from "axios";
 import { mask } from "vue-the-mask";
-
 export default {
-
   props:{
     dataEditEntity: Object
   },
-
   directives: { mask },
   setup() {
     return {
@@ -167,7 +164,6 @@ export default {
       dataEntityUuid: null
     };
   },
-
   methods: {
     async create() {
       this.entity.type.client = this.client;
@@ -191,9 +187,7 @@ export default {
           console.log(error);
         });
     },
-
     async update() {
-
         var config = {
         method: 'put',
         url: `http://localhost:3352/entities/${this.dataEntityUuid}`,
@@ -202,7 +196,6 @@ export default {
         },
         data : this.entity
       };
-
       await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
@@ -210,27 +203,21 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
-
     },
-
     async getDataEntity() {
         if(this.dataEditEntity != null){
-
         console.log(this.dataEditEntity)
-
         
         if(this.dataEditEntity.uuid){
           this.dataEntityUuid = this.dataEditEntity.uuid
         }else{
           this.dataEntityUuid = this.entity.uuid
         }
-
         var config = {
           method: 'get',
           url: `http://localhost:3352/entities/${this.dataEntityUuid}`,
           headers: { }
         };
-
         await axios(config)
         .then( (response) => {
           console.log(JSON.stringify(response.data));
@@ -242,7 +229,6 @@ export default {
         });
       }
     },
-
     async getEntityEdit() {
       if(this.entity.cpf_cnpj.length === 14 && this.pessoafisica == true || this.entity.cpf_cnpj.length === 18 && this.pessoafisica == false)
       var config = {
@@ -250,7 +236,6 @@ export default {
         url: `http://localhost:3352/entities/cgcic/${this.entity.cpf_cnpj}`,
         headers: { }
       };
-
       await axios(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
@@ -267,11 +252,9 @@ export default {
         console.log(error);
       });
     },
-
     limparDados() {
       this.entity = this.clear_object(this.entity);
     },
-
     clear_object(obj) {
       for (const key in obj) {
         obj[key] =
@@ -283,14 +266,12 @@ export default {
       }
       return obj;
     },
-
     async buscaCEP() {
       var config = {
         method: "get",
         url: `https://viacep.com.br/ws/${this.entity.cep}/json/`,
         headers: {},
       };
-
       await axios(config)
         .then((response) => {
           console.log(JSON.stringify(response.data));
@@ -304,7 +285,6 @@ export default {
     },
   },
   mounted () {
-
   },
   beforeMount(){
     if(this.dataEditEntity){

@@ -56,7 +56,7 @@ export default {
       comp_createEntity: false,
       comp_searchEntity: false,
       dataEditEntity: null,
-      logado: false
+      logado: true
     }
   },
 
