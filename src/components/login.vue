@@ -1,5 +1,5 @@
 <template>
-    <q-page class="bg-orange-7 top-0">
+    <q-page class="bg-primary top-0">
         <div class="row items-center" style="min-height: 100vh;">
             <div class="col-12">
     
@@ -17,18 +17,19 @@
                         <div transition-show="jump-down" class="login" v-if="!cadastro">
                             <div class="column">
                                 <div class="row">
-                                    <h5 class="text-h5 text-white q-my-md">Sistema Corp</h5>
+                                    <p class="q-my-md text-white" style="font-family: 'Press Start 2P', cursive;">&lt; code_community /&gt;</p>
                                 </div>
                                 <div class="row">
-                                    <q-card square bordered class="q-pa-lg shadow-1">
+                                    <q-card square bordered class="q-pa-lg shadow-1" style="border-radios: 9%;">
                                         <q-card-section>
                                             <q-input square filled clearable class="q-mt-md" v-model="user_email" label="E-mail" />
                                             <q-input square filled clearable class="q-mt-md" type="password" v-model="user_password" label="Senha" />
     
                                         </q-card-section>
                                         <q-card-actions class="q-px-md">
-                                            <q-btn unelevated color="orange-7" size="lg" label="Login" class="full-width" v-on:click="login()" />
+                                            <q-btn unelevated color="primary" size="lg" label="Login" class="full-width" v-on:click="login()" />
                                             <q-btn unelevated color="blue-grey-8" size="lg" label="Não tenho cadastro" class="full-width q-mt-lg" v-on:click="loginCadastro()" />
+                                            <a style="margin-top: 2%;" href="javascript:void(0);" v-on:click="recoveryPass()">Esqueceu sua senha?</a>
                                         </q-card-actions>
                                     </q-card>
                                 </div>
@@ -39,15 +40,21 @@
             </div>
             <q-chat-message id="message" v-if="message" name="Friend" avatar="../../public/img/toasty.png" :text="[message]" sent />
         </div>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <recoveryUser v-if="recoveryPassword"></recoveryUser>
     </q-page>
 </template>
 
 <script>
 import axios from "axios";
-import createLogin from './createLogin.vue'
+import createLogin from './createLogin.vue';
+import recoveryUser from './recoveryUser.vue';
 export default {
     components: {
-        createLogin
+        createLogin,
+        recoveryUser
     },
     props: {
         loginUser: Object
@@ -57,7 +64,9 @@ export default {
             user_email: null,
             user_password: null,
             cadastro: false,
-            message: false
+            message: false,
+            ifen: false,
+            recoveryPassword: true
         }
     },
     methods: {
@@ -75,19 +84,19 @@ export default {
             };
             await axios(config)
                 .then((response) => {
-                    
+
                     console.log(JSON.stringify(response.data));
 
                     if (response.data.message && response.data.message.error) {
                         this.errorMessage(response.data.message.error)
                     }
                     if (response.data.response && response.data.response.success) {
-                        if(response.data.response && response.data.response.success.active){
+                        if (response.data.response && response.data.response.success.active) {
                             this.userLogin(response.data.response.success)
-                        }else{
+                        } else {
                             this.errorMessage("O usuário não esta ativo")
                         }
-                        
+
                     }
                 })
                 .catch((error) => {
@@ -107,8 +116,16 @@ export default {
             console.log(value)
             this.cadastro = false
             console.log(this.cadastro)
+        },
+        recoveryPass: function(){
+            this.recoveryPassword = !this.recoveryPassword
         }
-    }
+    },
+        beforeCreate(){
+            setInterval(() => {
+                this.ifen = !this.ifen
+            }, 500)
+        }
 }
 </script>
 

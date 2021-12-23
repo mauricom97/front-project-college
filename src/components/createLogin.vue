@@ -22,7 +22,7 @@
 </template>
       </q-input>
         <q-card-actions class="q-px-md">
-          <q-btn unelevated color="orange-7" size="lg" label="Cadastrar" class="full-width" v-on:click="cadastroLogin()" />
+          <q-btn unelevated color="primary" size="lg" label="Cadastrar" class="full-width" v-on:click="cadastroLogin()" />
           <q-btn unelevated color="blue-grey-8" size="lg" label="Voltar para login" class="full-width q-mt-lg" v-on:click="login()" />
         </q-card-actions>
       </q-card-section>

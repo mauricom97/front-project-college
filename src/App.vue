@@ -1,5 +1,5 @@
 <template>
-  <q-layout class="bg-orange-7">
+  <q-layout class="bg-primary">
     <login v-if="!logado" @loginUser="getLogin"></login>
 
     <div v-if="logado">
@@ -126,6 +126,7 @@ import login from "./components/login.vue";
 import users from "./components/users.vue";
 import dashboard from "./components/dashboard.vue";
 import axios from "axios";
+
 
 export default {
   name: "LayoutDefault",
